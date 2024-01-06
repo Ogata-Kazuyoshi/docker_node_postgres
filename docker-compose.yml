@@ -8,18 +8,19 @@ services:
     tty: true
     ports:
       - 6100:3000
+    environment:
+      POSTGRES_HOST: '${DOCKER_POSTGTES_HOST}'
+      POSTGRES_DB: '${DOCKER_POSTGRES_DB}'
 
   postgres:
-    container_name: postgres
+    container_name: '${DOCKER_POSTGTES_HOST}' #jsで指定するホストはこの名前にすること！！！
     image: postgres:14
     ports:
       - 6101:5432 # Out側(:の左)はホストマシンからのアクセスポートだが、実質使うことがないのでなんでも良い。内部側(:の右)はPostgresデフォルトの5432にして、JSからのアクセスポートもこの5432を使用することになる
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: postgres_db #ここで定義したデータベースが初期設定の際に作成される
+      POSTGRES_DB: '${DOCKER_POSTGRES_DB}' #ここで定義したデータベースが初期設定の際に作成される
     volumes:
-      - /Users/user/Documents/devs/personal/db_data/docker_postgres:/var/lib/postgresql/data
+      - ./db:/var/lib/postgresql/data
       - ./initdb:/docker-entrypoint-initdb.d
-# volumes:
-#   db_data: {}
