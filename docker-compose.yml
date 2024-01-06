@@ -1,0 +1,25 @@
+version: '3'
+services:
+  node:
+    container_name: node_express
+    build: ./server
+    volumes:
+      - ./server:/app
+    tty: true
+    ports:
+      - 6100:3000
+
+  postgres:
+    container_name: postgres
+    image: postgres:14
+    ports:
+      - 6101:5432 # Out側(:の左)はホストマシンからのアクセスポートだが、実質使うことがないのでなんでも良い。内部側(:の右)はPostgresデフォルトの5432にして、JSからのアクセスポートもこの5432を使用することになる
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres_db #ここで定義したデータベースが初期設定の際に作成される
+    volumes:
+      - /Users/user/Documents/devs/personal/db_data/docker_postgres:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d
+# volumes:
+#   db_data: {}
